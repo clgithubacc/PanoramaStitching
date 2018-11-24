@@ -2,12 +2,12 @@
 octaves = 4;
 blur_level = 5;
 difference_level = 4;
-img = imread('img.jpg');
+img = imread('images.jpg');
 
 img = rgb2gray(img);
 img = im2double(img);
 k = sqrt(2);
-sigma = 1.6;
+sigma = sqrt(2);
 
 first_octaves = [sigma, k*sigma, (k^2)*sigma, (k^3)*sigma, (k^4)*sigma];
 second_octaves = [(k^2)*sigma, (k^3)*sigma, (k^4)*sigma, (k^5)*sigma, (k^6)*sigma ];
@@ -39,28 +39,28 @@ plot(cols2, rows2, 'go')
 hold off
 pause;
 figure;
-for i=1:5
-    subplot(3,2,i), imshow(G1(:,:,i),[])
+for i=1:4
+    subplot(3,2,i), imshow(L1(:,:,i),[])
 end
 
 pause;
 
 figure;
-for i=1:5
-    subplot(3,2,i), imshow(G2(:,:,i),[])
+for i=1:4
+    subplot(3,2,i), imshow(L2(:,:,i),[])
 end
 
 pause;
 
 figure;
-for i=1:5
-    subplot(3,2,i), imshow(G3(:,:,i),[])
+for i=1:4
+    subplot(3,2,i), imshow(L3(:,:,i),[])
 end
 
 pause;
 
 figure;
-for i=1:5
-    subplot(3,2,i), imshow(G4(:,:,i),[])
+for i=1:4
+    subplot(3,2,i), imshow(L4(:,:,i),[])
 end
 close all;

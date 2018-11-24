@@ -1,6 +1,14 @@
-function [maxMin] = findMaxMin(DoG)
+function [maxMin] = findMaxMin(DoG,threshold)
 %FINDMAXMIN label min max values given three DoGs
 %   Dog is a (x,y,3) matrix
+
+%important variables:
+maskSize=3;
+%threshold=25
+[rnum, cnum,~]=size(DoG);
+
+
+middleLayer=DoG(:,:,2);
 mask=true(3);
 allMax=cat(3,imdilate(DoG(:,:,1), mask),imdilate(DoG(:,:,2),...
     mask),imdilate(DoG(:,:,3), mask));
@@ -8,6 +16,34 @@ allMin=cat(3,imerode(DoG(:,:,1), mask),imerode(DoG(:,:,2),...
     mask),imerode(DoG(:,:,3), mask));
 localMax=max(allMax,[],3);
 localMin=min(allMin,[],3);
-maxMin=~((localMax-DoG(:,:,2))|(localMin-DoG(:,:,2)))
+nonKeyPts=logical(((localMax-middleLayer)&(localMin-middleLayer)));
+maxMinValues=ones(size(
+maxMinValues(nonKeyPts)=0;
+maxMin=abs(maxMinValues)>threshold;
+%maxMin=~((localMax-DoG(:,:,2))|(localMin-DoG(:,:,2)));
+
+%Remove non-corner points
+maxMinPositions=find(maxMin);
+middleLayer=double(imread('checker.png'));
+sigma=1;
+G1=fspecial('gaussian',2*ceil(3*sigma)+1, sigma);
+sigma2=0.7;
+G2=fspecial('gaussian',2*ceil(3*sigma2)+1, sigma2);
+[Gx,Gy] = gradient(G2);
+a=0.05;
+Dx=imfilter(middleLayer,Gx,'replicate');
+Dx2=Dx.^2;
+Dy=imfilter(middleLayer,Gy,'replicate');
+Dy2=Dy.^2;
+DxDy=Dy.*Dx;
+aPlusB=Dx2+Dy2;
+ab=Dx2.*Dy2-(DxDy.^2);
+TrDivDet=(aPlusB.^2)/ab;
+keyPointsValues=maxMin
+parfor i=i
+    
+
+end
+
 end
 

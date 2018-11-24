@@ -21,7 +21,9 @@ nonKeyPts=logical(((localMax-middleLayer)&(localMin-middleLayer)));
 maxMinValues=middleLayer;
 maxMinValues(nonKeyPts)=0;
 %Remove points given hard threshold
+fprintf('#ofPts before hard threshold: %i\n',size(find(maxMinValues),1));
 maxMinValues(abs(maxMinValues)<threshold)=0;
+fprintf('#ofPts after hard threshold: %i\n',size(find(maxMinValues),1));
 %maxMin=~((localMax-DoG(:,:,2))|(localMin-DoG(:,:,2)));
 
 %Remove non-corner points
@@ -40,6 +42,7 @@ ab=Dx2.*Dy2-(DxDy.^2);
 TrDivDet=(aPlusB.^2)./ab;
 TrDivDet(TrDivDet>=(((r+1)^2)/r))=0;
 maxMinValues(~(maxMinValues&TrDivDet))=0;
+fprintf('#ofPts after non-corner removal: %i\n',size(find(maxMinValues),1));
 end
 
 

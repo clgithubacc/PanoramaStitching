@@ -9,9 +9,10 @@
 tic
 clear;
 clc;
+figure;
 row=256;
 colum=256;
-img=imread('images.jpg');
+img=imread('a1.jpg');
 img=imresize(img,[row,colum]);
 img=rgb2gray(img);
 % img=histeq(img);

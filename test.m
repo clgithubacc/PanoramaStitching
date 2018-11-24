@@ -9,3 +9,4 @@
 tt=cat(3,rand(3),rand(3),rand(3));
 tt
 max(tt,[],3)
+

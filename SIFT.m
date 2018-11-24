@@ -22,7 +22,7 @@ G3 = construct_octave(blur_level,img3, third_octaves);
 img4 = reduce(img3);
 G4 = construct_octave(blur_level,img4, fourth_octaves);
 
-L1 = DoG(G1);
+L1 = DoG(G1)
 L2 = DoG(G2);
 L3 = DoG(G3);
 L4 = DoG(G4);

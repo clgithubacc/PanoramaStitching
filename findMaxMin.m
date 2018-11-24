@@ -11,3 +11,5 @@ localMin=min(allMin,[],3);
 maxMin=~((localMax-DoG(:,:,2))|(localMin-DoG(:,:,2)))
 end
 
+
+

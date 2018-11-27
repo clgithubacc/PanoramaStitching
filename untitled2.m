@@ -12,7 +12,7 @@ clc;
 figure;
 row=256;
 colum=256;
-img=imread('a1.jpg');
+img=imread('b1.jpg');
 img=imresize(img,[row,colum]);
 img=rgb2gray(img);
 % img=histeq(img);
@@ -190,6 +190,7 @@ subplot(2,2,4);
 imshow(origin)
 hold on
 plot(ry,rx,'b+');
+
 toc
 %% Orientation Assignment(Multiple orientations assignment)
 tic
@@ -266,7 +267,8 @@ toc
 tic
 d=4;% In David G. Lowe experiment,divide the area into 4*4.
 pixel=4;
-feature=zeros(d*d*8,extr_volume);
+
+feature=zeros(d*d*8+2,extr_volume); % put the coordinates of the central point to the last two rows
 for i=1:extr_volume
     descriptor=zeros(1,d*d*8);% feature dimension is 128=4*4*8;
     width=d*pixel;
@@ -274,6 +276,8 @@ for i=1:extr_volume
     x=floor((extrema(4*(i-1)+3)-1)/(n/(2^(extrema(4*(i-1)+1)-2))))+1;
     y=mod((extrema(4*(i-1)+3)-1),m/(2^(extrema(4*(i-1)+1)-2)))+1;
     z=extrema(4*(i-1)+2);
+    feature(d*d*8+1,i) = x;
+    feature(d*d*8+2,i) = y;
         if((m/2^(extrema(4*(i-1)+1)-2)-pixel*d*sqrt(2)/2)>x&&x>(pixel*d/2*sqrt(2))&&(n/2^(extrema(4*(i-1)+1)-2)-pixel*d/2*sqrt(2))>y&&y>(pixel*d/2*sqrt(2)))
         sub_x=(x-d*pixel/2+1):(x+d*pixel/2);
         sub_y=(y-d*pixel/2+1):(y+d*pixel/2);
@@ -308,7 +312,7 @@ for i=1:extr_volume
         magcounts=zeros(1,8);
         for angle=0:45:359
           magcount=0;
-          for p=1:cover;
+          for p=1:cover
               x=(floor((p-1)/pixel)+1)+pixel*floor((area-1)/d);
               y=mod(p-1,pixel)+1+pixel*(mod(area-1,d));
               c1=-180+angle;
@@ -341,7 +345,7 @@ for i=1:extr_volume
         else
             continue;
         end
-        feature(:,i)=descriptor';
+        feature(1:128,i)=descriptor';
 end
 index=find(sum(feature));
 feature=feature(:,index);

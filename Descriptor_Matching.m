@@ -1,17 +1,17 @@
-function [pointList1,pointList2] = Descriptor_Matching(feature1,feature2)
+function [pointList1,pointList2] = Descriptor_Matching(feature1,feature2,location1,location2)
     % ratio threshold
     ratioThresh = 0.8;
     pointList1 = [];
     pointList2 = [];
-    size1 = size(feature1,2);
-    size2 = size(feature2,2);
+    size1 = size(feature1,1);
+    size2 = size(feature2,1);
     for i = 1:size1
         best = 1;
         secondBest = 1;
-        bestDist = Normalized_EucDist(feature1(1:128,i),feature2(1:128,1));
+        bestDist = Normalized_EucDist(feature1(i,:),feature2(1,:));
         secondBestDist = bestDist;
         for j = 2:size2
-            tempDist = Normalized_EucDist(feature1(1:128,i),feature2(1:128,j));
+            tempDist = Normalized_EucDist(feature1(i,:),feature2(j,:));
             if(tempDist < bestDist)
                 secondBest = best;
                 secondBestDist = bestDist;
@@ -23,8 +23,8 @@ function [pointList1,pointList2] = Descriptor_Matching(feature1,feature2)
             end
         end
         if(bestDist/secondBestDist < ratioThresh)
-            pointList1 = [pointList1;feature1(130,i),feature1(129,i)];
-            pointList2 = [pointList2;feature2(130,best),feature1(129,best)];
+            pointList1 = [pointList1;location1(i,1),location1(i,2)];
+            pointList2 = [pointList2;location2(best,1),location2(best,2)];
         end
     end
     

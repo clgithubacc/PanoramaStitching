@@ -1,21 +1,38 @@
-function [outputArg1,outputArg2] = RANSAC(pts,numOfRandomPoints,threshold,distance,iterations)
+function [bestH,bestNumOfInliers] = RANSAC(pts,numOfRandomPoints,threshold,distance,iterations)
 %RANSAC Summary of this function goes here
 %   Detailed explanation goes here
 % Functions used in this file: 
 % - computeHomography(points)
 
-currentBestH=zeros(3);
-currentHighestInliers=0;
+bestH=zeros(3);
+bestNumOfInliers=0;
+bestInliers=[];
 numOfPts=size(pts,1);
 for i=1:iterations
     randPtIndex=randperm(numOfPts,numOfRandomPoints);
     randPts=pts(randPtIndex,:);
     H=computeHomography(randPts);
-    transformedPts=transformPoints(pts(:,[1 2],H));
+    transformedPts=transformPoints(pts(:,[1 2]),H);
     ptsDifference=abs(transformedPts-pts(:,[3 4]));
     numOfInliers=sum(ptsDifference<distance,'all');
+    %%% Method 1
+    if numOfInliers>bestNumOfInliers
+        bestH=H;
+        bestNumOfInliers=numOfInliers;
+        bestInliers=
+    end
+    %%% Method 2
     if numOfInliers>threshold
-        currentBestH=H;
+        bestH=H;
+        break;
+    elseif numOfInliers>bestNumOfInliers
+        bestH=H;
+        bestNumOfInliers=numOfInliers;
+    end
 end
-
+%re-estimate model
+if bestInliers==[]
+    error('Error in RANSAC(): No inliers for re-estimation.')
+else
+    H=computeHomography(bestInliers);
 end

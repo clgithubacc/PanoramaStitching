@@ -27,7 +27,6 @@ end
 v=V(:,1);
 %Normalize p if it is not normalized
 if sum(v.^2)~=1
-    disp('Normalized');
     v=v./(sqrt(sum(v.^2)));
 end
 h=reshape(v,[3 3])';

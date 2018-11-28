@@ -1,0 +1,5 @@
+addpath(genpath('..'))
+correctHomo=load('..\homography.txt');
+noisyHomo=load('..\homographyTEST.txt');
+%Test RANSAC(pts,numOfRandomPoints,threshold,distance,iterations)
+[H numOfInliers]=RANSAC(noisyHomo,

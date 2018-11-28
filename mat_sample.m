@@ -1,5 +1,6 @@
 % Load images.
-buildingDir = 'D:\maworkspace\cse5524\PanoramaStitching\img';
+%buildingDir = 'D:\maworkspace\cse5524\PanoramaStitching\img';
+buildingDir = fullfile(toolboxdir('vision'), 'visiondata', 'building');
 buildingScene = imageDatastore(buildingDir);
 
 % Display images to be stitched

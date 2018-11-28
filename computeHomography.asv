@@ -1,0 +1,56 @@
+function H = computeHomography(points)
+% COMPUTEHOMOGRAPHY return H given matched points from two images
+% points: N*4 matrix, where columns are x1,y1,x2,y2
+% returns: H, a 3*3 matrix. H is the transformation of img1 to img2
+debugMode=false;
+
+img1original=points(:,[1 2]);
+img2original=points(:,[3 4]);
+img1=img1original;img2=img2original;img1xl2=1;img1yl2=1;img2xl2=1;img2yl2=1;
+
+numOfPts=size(points,1);
+s1=sqrt(2)/(sum(sqrt((img1(:,1)-mean(img1(:,1))).^2+(img1(:,2)-mean(img1(:,2))).^2))/numOfPts);
+t1=[s1 0 -s1*mean(img1(:,1)); 0 s1 -s1*mean(img1(:,2)); 0 0 1];
+s2=sqrt(2)/(sum(sqrt((img2(:,1)-mean(img2(:,1))).^2+(img2(:,2)-mean(img2(:,2))).^2))/numOfPts);
+t2=[s2 0 -s2*mean(img2(:,1)); 0 s2 -s2*mean(img2(:,2)); 0 0 1];
+%Transform points
+img1h=[img1 ones(size(img1,1),1)];
+img1t=(t1*img1h')';
+img2h=[img2 ones(size(img2,1),1)];
+img2t=(t2*img2h')';
+for i=1:size(img1,1)
+    X=img1t(i,1);Y=img1t(i,2);x=img2t(i,1);y=img2t(i,2);
+    A(2*i-1,:)=[X Y 1 0 0 0 -X*x -Y*x -x];
+    A(2*i,:)=[0 0 0 X Y 1 -X*y -Y*y -y];
+end
+[V D]=eig(A'*A);
+v=V(:,1);
+%Normalize p if it is not normalized
+if sum(v.^2)~=1
+    disp('Normalized');
+    v=v./(sqrt(sum(v.^2)));
+end
+h=reshape(v,[3 3])';
+H=inv(t2)*h*t1;
+if debugMode
+    disp('H is: ');
+    disp(H)
+    pause;
+    newpts=(H*img1h')';
+    newpts=newpts(:,[1 2])./newpts(:,3);
+    newpts=[newpts(:,1).*img2xl2 newpts(:,2).*img2yl2];
+    %Plot
+    fig1=figure;
+    hold on
+    plot(img1(:,1),img1(:,2),'r+');
+    plot(img2original(:,1),img2original(:,2),'go');
+    plot(newpts(:,1),newpts(:,2),'b*');
+    hold off
+    saveas(fig1,[pwd '/output/q4out.png']);
+    pause;
+    square_err=(img2original-newpts).^2;
+    sse=sum((square_err(:,1)+square_err(:,2)));
+    fprintf('SSE is: %f',sse);
+end
+end
+
